@@ -2,6 +2,7 @@ package com.example.productservice.controlers;
 
 
 import com.example.productservice.dtos.ProductDto;
+import com.example.productservice.exceptions.NotFoundException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import com.example.productservice.repositories.ProductRepo;
@@ -13,6 +14,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -21,10 +23,12 @@ public class ProductController {
     private ProductService productService;
     private ProductRepo productRepo;
 
-    public ProductController(ProductService productService)
+
+    public ProductController(ProductService productService,ProductRepo productRepo)
     {
-       // this.productRepo=productRepo;
+
         this.productService=productService;
+        this.productRepo=productRepo;
     }
 
     @GetMapping()
@@ -34,17 +38,28 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getSingleproduct(@PathVariable("productId") Long productId)
-    {
+    public ResponseEntity<Product> getSingleproduct(@PathVariable("productId") Long productId) throws NotFoundException {
         MultiValueMap<String,String> mp=new LinkedMultiValueMap<>();
         mp.add("auth","sjgfgjsk122");
-        ResponseEntity<Product> responseEntity=new ResponseEntity<>(productService.getSingleProduct(productId),mp, HttpStatus.NOT_FOUND);
+
+        Optional<Product> productOptional=productService.getSingleProduct(productId);
+
+        if(productOptional.isEmpty())
+        {
+            throw new NotFoundException("id not found");
+        }
+        ResponseEntity<Product> responseEntity=new ResponseEntity<>(productOptional.get(),mp, HttpStatus.NOT_FOUND);
         return responseEntity;
     }
     @PostMapping()
     public ResponseEntity<Product> addNewproduct(@RequestBody ProductDto productDto)
     {
 
+        Product newproduct=new Product();
+        newproduct.setTitle(productDto.getTitle());
+        newproduct.setPrice(productDto.getPrice());
+        newproduct.setDescription(productDto.getDescription());
+       productRepo.save(newproduct);
         ResponseEntity<Product> responseEntity=new ResponseEntity<>(productService.addNewProduct(productDto),HttpStatus.OK);
 
         return responseEntity;
