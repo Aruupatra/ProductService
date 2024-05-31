@@ -1,6 +1,7 @@
 package com.example.productservice.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class Product extends Basemodel {
     private String title;
     private double price;
     private String description;
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Category category;
     private String image;
 }
