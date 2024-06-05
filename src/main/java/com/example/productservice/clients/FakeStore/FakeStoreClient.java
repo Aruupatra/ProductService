@@ -1,4 +1,4 @@
-package com.example.productservice.clients;
+package com.example.productservice.clients.FakeStore;
 
 import com.example.productservice.dtos.ProductDto;
 import com.example.productservice.exceptions.NotFoundException;
@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class FakeStoreClient {

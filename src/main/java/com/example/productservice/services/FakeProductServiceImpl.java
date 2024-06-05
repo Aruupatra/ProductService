@@ -1,12 +1,13 @@
 package com.example.productservice.services;
 
-import com.example.productservice.clients.FakeStoreClient;
-import com.example.productservice.clients.FakeStoreProductDto;
+import com.example.productservice.clients.FakeStore.FakeStoreClient;
+import com.example.productservice.clients.FakeStore.FakeStoreProductDto;
 import com.example.productservice.dtos.ProductDto;
 import com.example.productservice.exceptions.NotFoundException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Primary
 public class FakeProductServiceImpl implements ProductService {
 
     private RestTemplateBuilder restTemplateBuilder;

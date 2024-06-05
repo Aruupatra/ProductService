@@ -1,6 +1,10 @@
 package com.example.productservice.controlers;
 
 
+import com.example.productservice.clients.AuthenticationClient.AuthClient;
+import com.example.productservice.clients.AuthenticationClient.dtos.Role;
+import com.example.productservice.clients.AuthenticationClient.dtos.SessionStatus;
+import com.example.productservice.clients.AuthenticationClient.dtos.ValidateResponseDto;
 import com.example.productservice.dtos.ProductDto;
 import com.example.productservice.exceptions.NotFoundException;
 import com.example.productservice.models.Category;
@@ -9,6 +13,7 @@ import com.example.productservice.repositories.ProductRepo;
 import com.example.productservice.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -22,19 +27,77 @@ public class ProductController {
 
     private ProductService productService;
     private ProductRepo productRepo;
+    private AuthClient authClient;
 
 
-    public ProductController(ProductService productService,ProductRepo productRepo)
+    public ProductController(ProductService productService,ProductRepo productRepo,AuthClient authClient)
     {
 
         this.productService=productService;
         this.productRepo=productRepo;
+        this.authClient=authClient;
     }
 
     @GetMapping()
-    public List<Product> getAllProducts()
+    public ResponseEntity<List<Product>> getAllProducts(@Nullable @RequestHeader("AUTH_TOKEN") String token
+                                      ,@Nullable @RequestHeader("USER_ID") Long userId)
     {
-       return productService.getProducts();
+
+        if(token==null || userId==null)
+        {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+//        ValidateResponseDto validateResponseDto=authClient.validate(token,userId);
+//
+//       if(validateResponseDto.getSessionStatus().equals(SessionStatus.INVALID))
+//       {
+//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//        }
+//
+//         boolean flag=false;
+//        for(Role role:validateResponseDto.getUserDto().getRoles())
+//        {
+//            if(role.getRole().equals("ADMIN"))
+//            {
+//                flag=true;
+//            }
+//        }
+//       if(flag==true)
+//       {
+//          return new ResponseEntity<>(productService.getProducts(),HttpStatus.OK);
+//       }
+//       else {
+//           return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//       }
+
+//        ValidateResponseDto response = authClient.validate(token, userId);
+//
+//        // check if token is valid
+//        if (response.getSessionStatus().equals(SessionStatus.INVALID)) {
+//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//        }
+
+        // validate token
+        // RestTemplate rt = new RestTRemplate();
+        //  rt.get("localhost:9090/auth/validate?)
+
+        // check if user has permissions
+//        boolean isUserAdmin = false;
+//        for (Role role: response.getUserDto().getRoles()) {
+//            if (role.getRole().equals("ADMIN")) {
+//                isUserAdmin = true;
+//            }
+//        }
+//
+//        if (!isUserAdmin) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+
+        List<Product> products = productService.getProducts();
+
+//        products.get(0).setPrice(100); /// Bug induced in my code
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/{productId}")
@@ -48,7 +111,7 @@ public class ProductController {
         {
             throw new NotFoundException("id not found");
         }
-        ResponseEntity<Product> responseEntity=new ResponseEntity<>(productOptional.get(),mp, HttpStatus.NOT_FOUND);
+        ResponseEntity<Product> responseEntity=new ResponseEntity<>(productOptional.get(),mp, HttpStatus.OK);
         return responseEntity;
     }
     @PostMapping()

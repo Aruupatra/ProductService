@@ -1,7 +1,7 @@
 package com.example.productservice.services;
 
 import com.example.productservice.dtos.FakeStoreCategoryDto;
-import com.example.productservice.clients.FakeStoreProductDto;
+import com.example.productservice.clients.FakeStore.FakeStoreProductDto;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
