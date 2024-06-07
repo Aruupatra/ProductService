@@ -10,12 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryControllerTest {
 
 
-    @Test
-    void testSomething()
-    {
-        assert (1+1==2);
-
-//        assertThat();
-   }
+//    @Test
+//    void testSomething()
+//    {
+//        assert (1+1==2);
+//
+////        assertThat();
+//   }
 
 }
